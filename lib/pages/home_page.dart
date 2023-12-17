@@ -12,6 +12,13 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
+//TODO:remove logic from all the functions ;
+//TODO:crete a model ;
+//TODO:fix isses;
+//TODO:dispose the cotrolers;
+//TODO:Add a Hive Local Storage;
+//TODO:clean the Dialog after uing;
+//TODO:Publish the APP
 class _MyHomePageState extends State<MyHomePage> {
   List<double> weeklyExpense = List.generate(7, (_) => 0.0);
 
