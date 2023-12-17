@@ -1,6 +1,8 @@
+import 'package:expenses/model/expences.dart';
 import 'package:expenses/widgets/add_expence_widget.dart';
 import 'package:expenses/widgets/total_spent_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../widgets/graphs.dart';
 import '../widgets/item_expence_widget.dart';
@@ -19,6 +21,7 @@ class MyHomePage extends StatefulWidget {
 //TODO:Add a Hive Local Storage;
 //TODO:clean the Dialog after uing;
 //TODO:Publish the APP
+
 class _MyHomePageState extends State<MyHomePage> {
   List<double> weeklyExpense = List.generate(7, (_) => 0.0);
 
@@ -30,19 +33,7 @@ class _MyHomePageState extends State<MyHomePage> {
   List weeklyExpenses = [];
   List dailyExpenses = [];
 
-  var expensesData = [
-    ["Entertainment", 37.32, DateTime(2023, 12, 12)],
-    ["Groceries", 14.71, DateTime(2023, 12, 16)],
-    ["Groceries", 85.51, DateTime(2023, 12, 20)],
-    ["Food", 74.32, DateTime(2023, 12, 19)],
-    ["Entertainment", 12.49, DateTime(2023, 12, 14)],
-    ["Utilities", 89.12, DateTime(2023, 12, 16)],
-    ["Transport", 71.93, DateTime(2023, 12, 10)],
-    ["Transport", 78.44, DateTime(2023, 12, 26)],
-    ["Transport", 87.32, DateTime(2023, 12, 16)],
-  ];
-
-  void calculateWeeklyExpenses(List<List<dynamic>> expensesData) {
+  void calculateWeeklyExpenses(List<dynamic> expensesData) {
     DateTime today = DateTime.now();
     // Adjust startOfWeek to be the most recent Monday
     DateTime startOfWeek = today.subtract(Duration(days: today.weekday - 1));
@@ -115,7 +106,6 @@ class _MyHomePageState extends State<MyHomePage> {
       weekSpend = 0;
       for (var element in dailyExpenses) {
         daySpend += element[1];
-        print(dailyExpenses);
       }
       for (var element in monthlyExpenses) {
         monthSpend += element[1];
@@ -158,7 +148,23 @@ class _MyHomePageState extends State<MyHomePage> {
                   itemBuilder: (context, index) {
                     List expense =
                         expensesData[expensesData.length - index - 1];
-                    return ItemExpenceWidget(expence: expense);
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: 10),
+                      child: Slidable(
+                          endActionPane:
+                              ActionPane(motion: StretchMotion(), children: [
+                            SlidableAction(
+                              borderRadius: BorderRadius.circular(10),
+                              padding: EdgeInsets.only(bottom: 10),
+                              onPressed: (context) {},
+                              backgroundColor: Color(0xFFFE4A49),
+                              foregroundColor: Colors.white,
+                              icon: Icons.delete,
+                              label: 'Delete',
+                            ),
+                          ]),
+                          child: ItemExpenceWidget(expence: expense)),
+                    );
                   },
                 ),
               ),
