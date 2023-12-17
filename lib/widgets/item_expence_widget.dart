@@ -22,21 +22,20 @@ class ItemExpenceWidget extends StatelessWidget {
             children: [
               Text(
                 "${expence[0]}",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(
                 height: 5,
               ),
-              Text(expence[2].day.toString() +
-                  " / " +
-                  expence[2].month.toString() +
-                  " / " +
-                  expence[2].year.toString()),
+              Text(
+                "${expence[2].day} / ${expence[2].month} / ${expence[2].year}",
+              ),
             ],
           ),
           Text(
-            "${expence[1]}\$",
-            style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+            "${expence[1].toStringAsFixed(2)}\$",
+            style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
           ),
         ],
       ),

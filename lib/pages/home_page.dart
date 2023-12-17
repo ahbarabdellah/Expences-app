@@ -1,4 +1,3 @@
-import 'package:expenses/model/expences.dart';
 import 'package:flutter/material.dart';
 
 import '../widgets/graphs.dart';
@@ -12,6 +11,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  List<double> weeklyExpense = List.generate(7, (_) => 0.0);
+
   double daySpend = 0;
   double weekSpend = 0;
   double monthSpend = 0;
@@ -32,6 +33,27 @@ class _MyHomePageState extends State<MyHomePage> {
     ["Transport", 87.32, DateTime(2023, 12, 16)],
   ];
 
+  void calculateWeeklyExpenses(List<List<dynamic>> expensesData) {
+    DateTime today = DateTime.now();
+    DateTime startOfWeek = today.subtract(
+        Duration(days: today.weekday % 7)); // Saturday as start of the week
+    DateTime endOfWeek = startOfWeek.add(Duration(days: 6));
+
+    for (var expense in expensesData) {
+      String category = expense[0];
+      double amount = expense[1];
+      DateTime date = expense[2];
+
+      if (date.isAfter(startOfWeek.subtract(Duration(days: 1))) &&
+          date.isBefore(endOfWeek.add(Duration(days: 1)))) {
+        int dayIndex = date.difference(startOfWeek).inDays;
+        setState(() {
+          weeklyExpense[dayIndex] += amount;
+        });
+      }
+    }
+  }
+
   DateTime _selectedDate = DateTime.now();
   TextEditingController nameController = TextEditingController();
   TextEditingController dolarControler = TextEditingController();
@@ -50,8 +72,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     calculateSpent();
+    calculateWeeklyExpenses(expensesData);
     super.initState();
   }
 
@@ -80,9 +102,12 @@ class _MyHomePageState extends State<MyHomePage> {
     });
 
     setState(() {
+      daySpend = 0;
+      monthSpend = 0;
+      weekSpend = 0;
       for (var element in dailyExpenses) {
         daySpend += element[1];
-        print(daySpend);
+        print(dailyExpenses);
       }
       for (var element in monthlyExpenses) {
         monthSpend += element[1];
@@ -117,6 +142,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     Expanded(
                         child: TextField(
                       controller: dolarControler,
+                      keyboardType: const TextInputType.numberWithOptions(),
                       decoration: const InputDecoration(hintText: 'dollars'),
                     )),
                     const SizedBox(
@@ -124,6 +150,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     Expanded(
                         child: TextField(
                       controller: centControler,
+                      keyboardType: const TextInputType.numberWithOptions(),
                       decoration: const InputDecoration(hintText: 'cents'),
                     )),
                   ],
@@ -138,6 +165,9 @@ class _MyHomePageState extends State<MyHomePage> {
                         "${_selectedDate.day} / ${_selectedDate.month} / ${_selectedDate.year}",
                         style: const TextStyle(fontSize: 18),
                       ),
+                    ),
+                    const SizedBox(
+                      width: 10,
                     ),
                     Expanded(
                       child: Container(
@@ -162,7 +192,6 @@ class _MyHomePageState extends State<MyHomePage> {
                               if (selectedDate != null) {
                                 // Handle the selected date
                                 _selectedDate = selectedDate;
-                                calculateSpent();
                               }
                             });
                           },
@@ -187,6 +216,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: const Text("Save"),
                 onPressed: () {
                   savetransaction();
+                  calculateSpent();
+                  calculateWeeklyExpenses(expensesData);
                   Navigator.of(context).pop(); // Closes the dialog
                 }),
           ],
@@ -208,7 +239,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 weekSpend: weekSpend,
                 daySpend: daySpend,
               ),
-              BarGraph(),
+              BarGraph(weekExpences: weeklyExpense),
               const Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
@@ -275,7 +306,7 @@ class TotalSpendingWidget extends StatelessWidget {
               width: 5,
             ),
             Text(
-              "${daySpend}",
+              daySpend.toStringAsFixed(2),
               style: const TextStyle(
                 color: Colors.blue,
                 fontSize: 20,
@@ -293,7 +324,7 @@ class TotalSpendingWidget extends StatelessWidget {
               width: 5,
             ),
             Text(
-              "${weekSpend}",
+              weekSpend.toStringAsFixed(2),
               style: const TextStyle(
                 color: Colors.blue,
                 fontSize: 20,
@@ -311,7 +342,7 @@ class TotalSpendingWidget extends StatelessWidget {
               width: 5,
             ),
             Text(
-              "${mountSpend}",
+              mountSpend.toStringAsFixed(2),
               style: const TextStyle(
                 color: Colors.blue,
                 fontSize: 20,
