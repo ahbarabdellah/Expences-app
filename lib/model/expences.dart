@@ -1,7 +1,5 @@
-import 'dart:ffi';
-
 class Expences {
-  final Float ammount;
+  final double ammount;
   final String name;
   final DateTime dateTime;
   Expences({

@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 
 class BarGraph extends StatefulWidget {
   List<double> weekExpences;
-  BarGraph(
-      {super.key, this.weekExpences = const [100.2, 50, 30, 10, 32.54, 0]});
+  BarGraph({super.key, required this.weekExpences});
 
   @override
   State<BarGraph> createState() => _BarGraphState();
@@ -28,19 +27,20 @@ class _BarGraphState extends State<BarGraph> {
             CostumBarChart(
               index: index,
               expence: widget.weekExpences[index],
-              maxExpence: 100,
+              maxExpence: getMaxExpence(),
             ),
         ],
       ),
     );
   }
 
-  void getMaxExpence() {
+  double getMaxExpence() {
     var sorted = widget.weekExpences;
     sorted.sort();
     setState(() {
-      maxExpence = sorted[0];
+      maxExpence = sorted.last;
     });
+    return maxExpence;
   }
 }
 
@@ -59,11 +59,15 @@ class CostumBarChart extends StatelessWidget {
     if (expense == 0) {
       return 0.0;
     } else {
+      print("hi: ${((expense / maxExpence) * 250) * 0.9}");
+      print("max : $maxExpence");
       return ((expense / maxExpence) * 250) * 0.9;
     }
   }
 
-  String getTitle(int index) {
+  String getTitle(
+    int index,
+  ) {
     String text;
     switch (index) {
       case 0:

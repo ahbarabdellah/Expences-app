@@ -1,3 +1,5 @@
+import 'package:expenses/widgets/add_expence_widget.dart';
+import 'package:expenses/widgets/total_spent_widget.dart';
 import 'package:flutter/material.dart';
 
 import '../widgets/graphs.dart';
@@ -35,17 +37,16 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void calculateWeeklyExpenses(List<List<dynamic>> expensesData) {
     DateTime today = DateTime.now();
-    DateTime startOfWeek = today.subtract(
-        Duration(days: today.weekday % 7)); // Saturday as start of the week
-    DateTime endOfWeek = startOfWeek.add(Duration(days: 6));
+    // Adjust startOfWeek to be the most recent Monday
+    DateTime startOfWeek = today.subtract(Duration(days: today.weekday - 1));
+    DateTime endOfWeek = startOfWeek.add(const Duration(days: 6));
 
     for (var expense in expensesData) {
-      String category = expense[0];
       double amount = expense[1];
       DateTime date = expense[2];
 
       if (date.isAfter(startOfWeek.subtract(Duration(days: 1))) &&
-          date.isBefore(endOfWeek.add(Duration(days: 1)))) {
+          date.isBefore(endOfWeek.add(const Duration(days: 1)))) {
         int dayIndex = date.difference(startOfWeek).inDays;
         setState(() {
           weeklyExpense[dayIndex] += amount;
@@ -120,112 +121,6 @@ class _MyHomePageState extends State<MyHomePage> {
     // Now you have monthlyExpenses, weeklyExpenses, and dailyExpenses populated accordingly
   }
 
-// Call this function when you need to show the dialog.
-  void showCustomContentDialog(
-    BuildContext context,
-  ) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text("Add an Expense"),
-                TextField(
-                  controller: nameController,
-                  decoration: const InputDecoration(hintText: 'name'),
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                        child: TextField(
-                      controller: dolarControler,
-                      keyboardType: const TextInputType.numberWithOptions(),
-                      decoration: const InputDecoration(hintText: 'dollars'),
-                    )),
-                    const SizedBox(
-                        width: 10), // Add a gap between the text fields
-                    Expanded(
-                        child: TextField(
-                      controller: centControler,
-                      keyboardType: const TextInputType.numberWithOptions(),
-                      decoration: const InputDecoration(hintText: 'cents'),
-                    )),
-                  ],
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        "${_selectedDate.day} / ${_selectedDate.month} / ${_selectedDate.year}",
-                        style: const TextStyle(fontSize: 18),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Expanded(
-                      child: Container(
-                        decoration: BoxDecoration(
-                            color: Colors.black,
-                            borderRadius: BorderRadius.circular(5)),
-                        child: MaterialButton(
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return DatePickerDialog(
-                                  initialDate:
-                                      DateTime.now(), // Set an initial date
-                                  firstDate: DateTime.now()
-                                      .subtract(const Duration(days: 50)),
-                                  lastDate: DateTime.now()
-                                      .add(const Duration(days: 50)),
-                                );
-                              },
-                            ).then((selectedDate) {
-                              if (selectedDate != null) {
-                                // Handle the selected date
-                                _selectedDate = selectedDate;
-                              }
-                            });
-                          },
-                          child: const Text(
-                            'Select a Date',
-                            style: TextStyle(color: Colors.white),
-                          ), // Add a child to MaterialButton to show something on the button
-                        ),
-                      ),
-                    ),
-                  ],
-                )
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text("Cancel"),
-              onPressed: () => Navigator.of(context).pop(), // Closes the dialog
-            ),
-            TextButton(
-                child: const Text("Save"),
-                onPressed: () {
-                  savetransaction();
-                  calculateSpent();
-                  calculateWeeklyExpenses(expensesData);
-                  Navigator.of(context).pop(); // Closes the dialog
-                }),
-          ],
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -267,7 +162,7 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.black,
         onPressed: () {
-          showCustomContentDialog(context);
+          showDialg(context);
         },
         child: const Icon(
           Icons.add,
@@ -277,82 +172,25 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
-}
 
-class TotalSpendingWidget extends StatelessWidget {
-  const TotalSpendingWidget({
-    super.key,
-    required this.mountSpend,
-    required this.weekSpend,
-    required this.daySpend,
-  });
-
-  final double daySpend;
-  final double weekSpend;
-  final double mountSpend;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 20),
-      child: Column(
-        children: [
-          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            const Text(
-              "Total Day Spent :",
-              style: TextStyle(fontSize: 20),
-            ),
-            const SizedBox(
-              width: 5,
-            ),
-            Text(
-              daySpend.toStringAsFixed(2),
-              style: const TextStyle(
-                color: Colors.blue,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const Text("\$", style: TextStyle(fontSize: 20))
-          ]),
-          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            const Text(
-              "Total Week Spent :",
-              style: TextStyle(fontSize: 20),
-            ),
-            const SizedBox(
-              width: 5,
-            ),
-            Text(
-              weekSpend.toStringAsFixed(2),
-              style: const TextStyle(
-                color: Colors.blue,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const Text("\$", style: TextStyle(fontSize: 20))
-          ]),
-          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            const Text(
-              "Total month Spent :",
-              style: TextStyle(fontSize: 20),
-            ),
-            const SizedBox(
-              width: 5,
-            ),
-            Text(
-              mountSpend.toStringAsFixed(2),
-              style: const TextStyle(
-                color: Colors.blue,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const Text("\$", style: TextStyle(fontSize: 20))
-          ]),
-        ],
-      ),
+  Future<dynamic> showDialg(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AddExpenseDialog(
+          nameController: nameController,
+          dolarControler: dolarControler,
+          centControler: centControler,
+          selectedDate: _selectedDate,
+          update: update,
+        );
+      },
     );
+  }
+
+  void update() {
+    savetransaction();
+    calculateSpent();
+    calculateWeeklyExpenses(expensesData);
   }
 }
