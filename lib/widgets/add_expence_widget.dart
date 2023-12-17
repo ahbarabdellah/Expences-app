@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class AddExpenseDialog extends StatefulWidget {
   final TextEditingController nameController;
   final TextEditingController dolarControler;
   final TextEditingController centControler;
   DateTime selectedDate;
-  final update;
+  final void Function() update;
 
   AddExpenseDialog(
       {super.key,
@@ -115,6 +116,5 @@ class _AddExpenseDialogState extends State<AddExpenseDialog> {
             }),
       ],
     );
-    ;
   }
 }

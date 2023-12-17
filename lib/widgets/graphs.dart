@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class BarGraph extends StatefulWidget {
-  List<double> weekExpences;
-  BarGraph({super.key, required this.weekExpences});
+  final List<double> weekExpences;
+  const BarGraph({super.key, required this.weekExpences});
 
   @override
   State<BarGraph> createState() => _BarGraphState();
@@ -59,8 +59,6 @@ class CostumBarChart extends StatelessWidget {
     if (expense == 0) {
       return 0.0;
     } else {
-      print("hi: ${((expense / maxExpence) * 250) * 0.9}");
-      print("max : $maxExpence");
       return ((expense / maxExpence) * 250) * 0.9;
     }
   }
@@ -122,7 +120,8 @@ class CostumBarChart extends StatelessWidget {
         ),
         Text(
           getTitle(index),
-          style: TextStyle(fontWeight: FontWeight.w600, color: Colors.black),
+          style:
+              const TextStyle(fontWeight: FontWeight.w600, color: Colors.black),
         )
       ]),
     );

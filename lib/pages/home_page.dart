@@ -52,7 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
       double amount = expense[1];
       DateTime date = expense[2];
 
-      if (date.isAfter(startOfWeek.subtract(Duration(days: 1))) &&
+      if (date.isAfter(startOfWeek.subtract(const Duration(days: 1))) &&
           date.isBefore(endOfWeek.add(const Duration(days: 1)))) {
         int dayIndex = date.difference(startOfWeek).inDays;
         setState(() {
@@ -62,7 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  DateTime _selectedDate = DateTime.now();
+  final DateTime _selectedDate = DateTime.now();
   TextEditingController nameController = TextEditingController();
   TextEditingController dolarControler = TextEditingController();
   TextEditingController centControler = TextEditingController();
