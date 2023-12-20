@@ -151,18 +151,23 @@ class _MyHomePageState extends State<MyHomePage> {
                     return Container(
                       margin: const EdgeInsets.only(bottom: 10),
                       child: Slidable(
-                          endActionPane:
-                              ActionPane(motion: StretchMotion(), children: [
-                            SlidableAction(
-                              borderRadius: BorderRadius.circular(10),
-                              padding: EdgeInsets.only(bottom: 10),
-                              onPressed: (context) {},
-                              backgroundColor: Color(0xFFFE4A49),
-                              foregroundColor: Colors.white,
-                              icon: Icons.delete,
-                              label: 'Delete',
-                            ),
-                          ]),
+                          endActionPane: ActionPane(
+                              motion: const StretchMotion(),
+                              children: [
+                                SlidableAction(
+                                  borderRadius: BorderRadius.circular(10),
+                                  padding: const EdgeInsets.only(bottom: 10),
+                                  onPressed: (context) {
+                                    setState(() {
+                                      expensesData.remove(expense);
+                                    });
+                                  },
+                                  backgroundColor: const Color(0xFFFE4A49),
+                                  foregroundColor: Colors.white,
+                                  icon: Icons.delete,
+                                  label: 'Delete',
+                                ),
+                              ]),
                           child: ItemExpenceWidget(expence: expense)),
                     );
                   },

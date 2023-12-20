@@ -1,6 +1,5 @@
 import 'package:expenses/pages/home_page.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 
 void main() async {
   runApp(const MyApp());
